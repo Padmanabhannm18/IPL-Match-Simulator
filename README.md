@@ -6,8 +6,11 @@ This IPL Match Simulator is a real-time cricket match visualization tool built u
 ✅ Live scoreboard updates after every ball
 ✅ Detailed scorecard after each innings
 ✅ Final match summary with the winning team
-
 📂 Project Structure
+📂 Project Structure
+kotlin
+Copy
+Edit
 📦 IPL Match Simulator
 ├── 📁 data
 │   ├── IPL Matches 2008-2020.csv
@@ -25,11 +28,15 @@ win_predictor.py → Predicts match winner based on historical data
 visualizer.py → Generates match insights & visualizations
 data/ → IPL datasets
 models/ → Pre-trained ML models for predictions
+predictions
 🚀 Installation & Setup
 🔹 Step 1: Clone the Repository
-
+bash
+Copy
+Edit
 git clone https://github.com/Padmanabhannm18/IPL-Match-Simulator.git
 cd IPL-Match-Simulator
+
 🔹 Step 2: Install Dependencies
 Create a virtual environment & install required libraries:
 
