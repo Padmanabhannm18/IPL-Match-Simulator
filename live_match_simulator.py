@@ -7,8 +7,7 @@ def simulate_live_score(deliveries, match_id):
 
     # Simulate Ball-by-Ball Score
     st.subheader(f"🏏 Live Match Simulation - Match {match_id}")
-    st.
-
+    
     
     # Split into two innings
     innings_1 = match_data[match_data["inning"] == 1]
