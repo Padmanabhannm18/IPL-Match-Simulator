@@ -1,8 +1,8 @@
 import pandas as pd
 import streamlit as st
 def load_data():
-    matches = pd.read_csv("data\matches.csv")
-    deliveries = pd.read_csv("data\deliveries.csv")
+    matches = pd.read_csv("data/matches.csv")
+    deliveries = pd.read_csv("data/deliveries.csv")
     
     deliveries = deliveries.sort_values(by=["match_id", "inning", "over", "ball"]).reset_index(drop=True)
 
