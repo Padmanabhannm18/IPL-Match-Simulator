@@ -3,7 +3,7 @@ import pandas as pd
 import time
 
 def simulate_live_score(deliveries, match_id):
-    match_data = deliveries[deliveries["id"] == match_id]
+    match_data = deliveries[deliveries["match_id"] == match_id]
 
     # Simulate Ball-by-Ball Score
     st.subheader(f"🏏 Live Match Simulation - Match {match_id}")
@@ -41,7 +41,7 @@ def simulate_live_score(deliveries, match_id):
             time.sleep(0.5)  # Simulate ball delay
 
             # Player details
-            batsman = row["batsman"]
+            batsman = row["batter"]
             non_striker = row["non_striker"]
             bowler = row["bowler"]
 
@@ -136,5 +136,7 @@ def simulate_live_score(deliveries, match_id):
         st.success("🎉 **Team 2 Wins the Match!** 🏆")
     else:
         st.warning("🤝 **Match Tied!**")
+
+    st.success("🎉 Match Simulation Completed!")
 
     st.success("🎉 Match Simulation Completed!")
