@@ -10,7 +10,7 @@ if not os.path.exists("models"):
     os.makedirs("models")
 
 def train_win_predictor():
-    file_path = "data/matches.csv"
+    file_path = "matches.csv"
 
     if not os.path.exists(file_path):
         print(f"❌ ERROR: Data file not found at {file_path}")
