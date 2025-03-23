@@ -23,8 +23,12 @@ option = st.sidebar.radio(
 if option == "🏆 Match Prediction":
     st.header("Match Winner Predictor")
 
-    team1 = st.selectbox("Select Team 1", sorted(matches['team1'].unique()))
-    team2 = st.selectbox("Select Team 2", sorted(matches['team2'].unique()))
+    team1 = st.selectbox("Select Team 1", sorted(matches['team1'].unique()), key="team1")
+
+    # Filter out team1 from the list of teams for team2 selection
+    available_teams = sorted([team for team in matches['team2'].unique() if team != team1])
+    team2 = st.selectbox("Select Team 2", available_teams, key="team2")
+
     venue = st.selectbox("Select Venue", sorted(matches['venue'].unique()))
     toss_winner = st.selectbox("Who won the toss?", [team1, team2])
     toss_decision = st.radio("Toss Decision", ["bat", "field"])
@@ -36,14 +40,18 @@ if option == "🏆 Match Prediction":
 # 📊 **Head-to-Head Stats**
 elif option == "📊 Head-to-Head Stats":
     st.header("Team vs Team Head-to-Head Analysis")
-    
+
     team1 = st.selectbox("Select Team 1", sorted(matches['team1'].unique()), key="h2h_team1")
-    team2 = st.selectbox("Select Team 2", sorted(matches['team2'].unique()), key="h2h_team2")
+
+    # Ensure Team 2 is different from Team 1
+    available_h2h_teams = sorted([team for team in matches['team2'].unique() if team != team1])
+    team2 = st.selectbox("Select Team 2", available_h2h_teams, key="h2h_team2")
 
     plot_head_to_head(matches, team1, team2)
 
     st.subheader("Match Trends Over the Years")
     plot_match_trends(matches)
+
 
 # 📢 **Live Match Simulation**
 elif option == "📢 Live Match Simulation":
