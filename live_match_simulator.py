@@ -138,5 +138,3 @@ def simulate_live_score(deliveries, match_id):
         st.warning("🤝 **Match Tied!**")
 
     st.success("🎉 Match Simulation Completed!")
-
-    st.success("🎉 Match Simulation Completed!")
