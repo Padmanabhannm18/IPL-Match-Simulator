@@ -14,6 +14,10 @@ def simulate_live_score(deliveries, matches, match_id):
     team2 = match_info["team2"].values[0]
     venue = match_info["venue"].values[0]
 
+    # Identify which team batted first (Based on first inning deliveries)
+    first_inning_team = deliveries[(deliveries["match_id"] == match_id) & (deliveries["inning"] == 1)]["batting_team"].iloc[0]
+    second_inning_team = team1 if first_inning_team != team1 else team2
+
     # Display Match Info
     st.subheader(f"🏏 Live Match Simulation - {team1} vs {team2}")
     st.write(f"📍 **Live from {venue}**")
@@ -39,7 +43,7 @@ def simulate_live_score(deliveries, matches, match_id):
 
     def simulate_inning(inning_data, inning_num, batting_team, bowling_team):
         """Simulate an inning ball-by-ball with extra type tracking."""
-        st.write(f"### 🏏 {batting_team} Batting - Inning {inning_num}")
+        st.write(f"### 🏏 **{batting_team} is Batting | {bowling_team} is Bowling**")
 
         score = 0
         wickets = 0
@@ -123,28 +127,28 @@ def simulate_live_score(deliveries, matches, match_id):
         st.write(f"🏏 **Final Score:** {total_score}/{wickets} | Extras: {extras}")
 
     # Simulate First Innings
-    simulate_inning(innings_1, 1, team1, team2)
+    simulate_inning(innings_1, 1, first_inning_team, second_inning_team)
 
     # Break before second innings
     st.write("## 🏏 **Innings Break** ⏸️")
     time.sleep(2)  # Simulated break time
 
     # Simulate Second Innings
-    simulate_inning(innings_2, 2, team2, team1)
+    simulate_inning(innings_2, 2, second_inning_team, first_inning_team)
     
     # Match Summary
     st.subheader("📢 **Match Summary**")
     team1_score = f"{innings_1['total_runs'].sum()}/{innings_1['player_dismissed'].count()}"
     team2_score = f"{innings_2['total_runs'].sum()}/{innings_2['player_dismissed'].count()}"
 
-    st.write(f"🏏 **{team1} Score:** {team1_score}")
-    st.write(f"🏏 **{team2} Score:** {team2_score}")
+    st.write(f"🏏 **{first_inning_team} Score:** {team1_score}")
+    st.write(f"🏏 **{second_inning_team} Score:** {team2_score}")
 
     # Determine Winner
     if innings_1["total_runs"].sum() > innings_2["total_runs"].sum():
-        st.success(f"🎉 **{team1} Wins the Match!** 🏆")
+        st.success(f"🎉 **{first_inning_team} Wins the Match!** 🏆")
     elif innings_1["total_runs"].sum() < innings_2["total_runs"].sum():
-        st.success(f"🎉 **{team2} Wins the Match!** 🏆")
+        st.success(f"🎉 **{second_inning_team} Wins the Match!** 🏆")
     else:
         st.warning("🤝 **Match Tied!**")
 
