@@ -2,16 +2,29 @@ import streamlit as st
 import pandas as pd
 import time
 
-def simulate_live_score(deliveries, match_id):
-    match_data = deliveries[deliveries["match_id"] == match_id]
-
-    # Simulate Ball-by-Ball Score
-    st.subheader(f"🏏 Live Match Simulation - Match {match_id}")
+def simulate_live_score(deliveries, matches, match_id):
+    # Fetch match details (Team names & Venue)
+    match_info = matches[matches["id"] == match_id]
     
+    if match_info.empty:
+        st.error("⚠️ Match details not found!")
+        return
+
+    team1 = match_info["team1"].values[0]
+    team2 = match_info["team2"].values[0]
+    venue = match_info["venue"].values[0]
+
+    # Display Match Info
+    st.subheader(f"🏏 Live Match Simulation - {team1} vs {team2}")
+    st.write(f"📍 **Live from {venue}**")
+
+    # Filter deliveries for selected match
+    match_data = deliveries[deliveries["match_id"] == match_id]
     
     # Split into two innings
     innings_1 = match_data[match_data["inning"] == 1]
     innings_2 = match_data[match_data["inning"] == 2]
+
     def get_extra_type(row):
         """Determine the type of extra runs."""
         if "wide_runs" in row and row["wide_runs"] > 0:
@@ -24,16 +37,15 @@ def simulate_live_score(deliveries, match_id):
             return "Leg Bye"
         return None  # No extras
 
-    def simulate_inning(inning_data, inning_num):
+    def simulate_inning(inning_data, inning_num, batting_team, bowling_team):
         """Simulate an inning ball-by-ball with extra type tracking."""
-        st.write(f"### 🏏 Inning {inning_num} Starts!")
+        st.write(f"### 🏏 {batting_team} Batting - Inning {inning_num}")
 
         score = 0
         wickets = 0
         extras_total = 0
         batsman_scores = {}  # Dictionary to track individual batsman scores
         bowler_wickets = {}  # Dictionary to track bowlers' wickets
-        # progress_bar = st.progress(0)
         
         total_balls = len(inning_data)
 
@@ -83,17 +95,14 @@ def simulate_live_score(deliveries, match_id):
             # Display Updated Scoreboard
             st.write(f"🏏 **Score: {score}/{wickets}** | {batsman}: {batsman_scores.get(batsman, 0)}* | {non_striker}: {batsman_scores.get(non_striker, 0)} | Extras: {extras_total}")
 
-            # Update progress bar
-            # progress_bar.progress((idx + 1) / total_balls)
-
-        st.success(f"🏆 Inning {inning_num} Ends! Final Score: {score}/{wickets} (Extras: {extras_total})")
+        st.success(f"🏆 {batting_team} Inning {inning_num} Ends! Final Score: {score}/{wickets} (Extras: {extras_total})")
 
         # 📊 Display Scorecard
-        show_scorecard(batsman_scores, bowler_wickets, score, wickets, extras_total, inning_num)
+        show_scorecard(batsman_scores, bowler_wickets, score, wickets, extras, batting_team)
 
-    def show_scorecard(batsman_scores, bowler_wickets, total_score, wickets, extras, inning_num):
+    def show_scorecard(batsman_scores, bowler_wickets, total_score, wickets, extras, team):
         """Display a detailed scoreboard at the end of the innings."""
-        st.subheader(f"📋 Scorecard - Inning {inning_num}")
+        st.subheader(f"📋 {team} Scorecard")
 
         # Batsman Scores
         st.write("### 🏏 Batting Performance")
@@ -114,26 +123,28 @@ def simulate_live_score(deliveries, match_id):
         st.write(f"🏏 **Final Score:** {total_score}/{wickets} | Extras: {extras}")
 
     # Simulate First Innings
-    simulate_inning(innings_1, 1)
+    simulate_inning(innings_1, 1, team1, team2)
 
     # Break before second innings
     st.write("## 🏏 **Innings Break** ⏸️")
     time.sleep(2)  # Simulated break time
 
     # Simulate Second Innings
-    simulate_inning(innings_2, 2)
+    simulate_inning(innings_2, 2, team2, team1)
+    
+    # Match Summary
     st.subheader("📢 **Match Summary**")
     team1_score = f"{innings_1['total_runs'].sum()}/{innings_1['player_dismissed'].count()}"
     team2_score = f"{innings_2['total_runs'].sum()}/{innings_2['player_dismissed'].count()}"
 
-    st.write(f"🏏 **Team 1 Score:** {team1_score}")
-    st.write(f"🏏 **Team 2 Score:** {team2_score}")
+    st.write(f"🏏 **{team1} Score:** {team1_score}")
+    st.write(f"🏏 **{team2} Score:** {team2_score}")
 
     # Determine Winner
     if innings_1["total_runs"].sum() > innings_2["total_runs"].sum():
-        st.success("🎉 **Team 1 Wins the Match!** 🏆")
+        st.success(f"🎉 **{team1} Wins the Match!** 🏆")
     elif innings_1["total_runs"].sum() < innings_2["total_runs"].sum():
-        st.success("🎉 **Team 2 Wins the Match!** 🏆")
+        st.success(f"🎉 **{team2} Wins the Match!** 🏆")
     else:
         st.warning("🤝 **Match Tied!**")
 
