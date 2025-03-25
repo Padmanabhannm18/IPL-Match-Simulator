@@ -58,7 +58,7 @@ elif option == "📢 Live Match Simulation":
     st.header("Simulate an IPL Match Live")
     match_id = st.selectbox("Select Match ID", sorted(deliveries["match_id"].unique()))
     if st.button("Start Simulation"):
-        simulate_live_score(deliveries, match_id)
+        simulate_live_score(deliveries,matches, match_id)
 
 # 🌍 **Live Score Updates**
 elif option == "🌍 Live Score Updates":
